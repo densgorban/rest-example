@@ -1,5 +1,6 @@
 package org.rest.quest.wall;
 
+import org.rest.quest.domain.init.wrapper.MottoComparisonWrapper;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -19,11 +20,11 @@ public class Utils {
         return new HttpEntity(headers);
     }
 
-    public static HttpEntity getJSONHttpHeadersEntity(String keyword, int teamId) {
+    public static HttpEntity getJSONHttpHeadersEntity(String keyword, int teamId, MottoComparisonWrapper wrapper) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("team-id", String.valueOf(teamId));
         headers.set("keyword", keyword);
-        headers.set("Content-type", "application/json");
-        return new HttpEntity(headers);
+        headers.set("Content-Type", "application/json");
+        return new HttpEntity(wrapper,headers);
     }
 }

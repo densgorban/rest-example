@@ -40,13 +40,12 @@ public class MottoHelper {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 
-        HttpEntity entity = Utils.getJSONHttpHeadersEntity(keyword, teamId);
+        MottoComparisonWrapper wrapper = new MottoComparisonWrapper(moto0.getId(), moto1.getId());
 
-        HashMap<String, Integer> bodyMap = new HashMap<>();
-        bodyMap.put(moto0.getMotto(), moto0.getId());
-        bodyMap.put(moto1.getMotto(), moto1.getId());
+        HttpEntity entity = Utils.getJSONHttpHeadersEntity(keyword, teamId, wrapper);
+
         HttpEntity<String> mottoWrapperResponseEntity = restTemplate.exchange(
-                hostUrl + "motto", HttpMethod.POST, entity, String.class, bodyMap);
+                hostUrl + "motto/", HttpMethod.POST, entity, String.class, Collections.EMPTY_LIST);
 
         logger.info(mottoWrapperResponseEntity.getBody());
 

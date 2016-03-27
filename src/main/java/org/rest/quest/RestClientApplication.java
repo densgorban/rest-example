@@ -1,7 +1,6 @@
 package org.rest.quest;
 
 import org.rest.quest.domain.init.wrapper.MottoWrapper;
-import org.rest.quest.service.PuzzleService;
 import org.rest.quest.wall.*;
 
 import java.net.UnknownHostException;
@@ -13,7 +12,7 @@ public class RestClientApplication {
 
     private static final Logger logger = Logger.getLogger(RestClientApplication.class.getSimpleName());
     private static String HOST_URL = "http://192.168.88.64:8080/";
-    private static int teamId = 9;
+    private static int TEAM_ID = 9;
     ;
 
     public static void main(String[] args) throws UnknownHostException {
@@ -29,26 +28,27 @@ public class RestClientApplication {
 
         //1st wall
         MottoHelper mottoHelper = new MottoHelper();
-        List<MottoWrapper> mottoList = new ArrayList<MottoWrapper>();
+        List<MottoWrapper> mottoList = new ArrayList<>();
         IntStream.range(0, 220).forEach(i -> {
-            MottoWrapper motto = mottoHelper.getKeyword(HOST_URL, null, teamId, i);
+            MottoWrapper motto = mottoHelper.getKeyword(HOST_URL, null, TEAM_ID, i);
             mottoList.add(motto);
             System.out.println(motto);
         });
 /*Sort*/
         Collections.sort(mottoList,
-                (o1, o2) -> MottoHelper.compareKeyword(HOST_URL, null, teamId, o1, o2));
+                (o1, o2) -> MottoHelper.compareKeyword(HOST_URL, null, TEAM_ID, o1, o2));
 
-        System.out.println(mottoList.get(0));
+        MottoWrapper key = mottoList.get(0);
+        System.out.println(key);
 
-//        String keyword = mottoHelper.getKeyword(HOST_URL, null, teamId, 0/*, 221*//*);
+//        String keyword = mottoHelper.getKeyword(HOST_URL, null, TEAM_ID, 0/*, 221*//*);
         //2st wall
-        /*int secondPuzzle = new PuzzleHelper().readPuzzleHeader(HOST_URL, keyword, teamId,  0, "");
+        /*int secondPuzzle = new PuzzleHelper().readPuzzleHeader(HOST_URL, keyword, TEAM_ID,  0, "");
         keyword = PuzzleService.getPuzzle(4);
         //3rd wall
         new UserResolver().readUser(HOST_URL, "keyword", 0);
         //4st wall
-        WinnerResolver.sendWinnerUrl(HOST_URL, keyword, teamId);
+        WinnerResolver.sendWinnerUrl(HOST_URL, keyword, TEAM_ID);
         logger.info("we are winners");*/
     }
 
