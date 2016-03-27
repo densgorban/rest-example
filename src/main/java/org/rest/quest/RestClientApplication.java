@@ -1,7 +1,9 @@
 package org.rest.quest;
 
+import org.rest.quest.domain.Puzzle;
 import org.rest.quest.domain.init.wrapper.MottoWrapper;
 import org.rest.quest.wall.*;
+import org.springframework.http.HttpEntity;
 
 import java.net.UnknownHostException;
 import java.util.*;
@@ -11,14 +13,13 @@ import java.util.stream.IntStream;
 public class RestClientApplication {
 
     private static final Logger logger = Logger.getLogger(RestClientApplication.class.getSimpleName());
-    private static String HOST_URL = "http://192.168.88.64:8080/";
-    private static int TEAM_ID = 9;
-    ;
 
     public static void main(String[] args) throws UnknownHostException {
+        MottoHelper.TEAM_ID = 9;
+        MottoHelper.HOST_URL = "http://192.168.88.64:8080/";
 
         if (System.getProperty("url") != null) {
-            HOST_URL = System.getProperty("url");
+            MottoHelper.HOST_URL = System.getProperty("url");
             System.out.println("url received: " + System.getProperty("url"));
         }
 
@@ -27,19 +28,39 @@ public class RestClientApplication {
 //        registrationHelper.registerTeam(HOST_URL, "Apple", "Forever young");
 
         //1st wall
-        MottoHelper mottoHelper = new MottoHelper();
-        List<MottoWrapper> mottoList = new ArrayList<>();
+        /*List<MottoWrapper> mottoList = new ArrayList<>();
         IntStream.range(0, 220).forEach(i -> {
-            MottoWrapper motto = mottoHelper.getKeyword(HOST_URL, null, TEAM_ID, i);
+            MottoWrapper motto = MottoHelper.getKeyword( null, i);
             mottoList.add(motto);
             System.out.println(motto);
         });
-/*Sort*/
+*//*Sort*//*
         Collections.sort(mottoList,
-                (o1, o2) -> MottoHelper.compareKeyword(HOST_URL, null, TEAM_ID, o1, o2));
+                (o1, o2) -> MottoHelper.compareKeyword(null, o1, o2));
+*/
+//        MottoWrapper keyMotto = mottoList.get(0); /*Protect, serve, progress*/
 
-        MottoWrapper key = mottoList.get(0);
-        System.out.println(key);
+        String key = "Protect, serve, progress";
+        /*todo: do it in binary search*/
+        int i1=0;
+        int i2=0;
+        List<Integer> dirr =  new ArrayList<>();
+        IntStream.rangeClosed(0, 2080).forEach(i -> {
+            HttpEntity<Puzzle> pazzle = MottoHelper.getPazzle(key, i);
+            if (pazzle.getHeaders().get("direction-one-to-go").equals("0")) {
+                dirr.add(i);
+            }
+            if (pazzle.getHeaders().get("direction-two-to-go").equals("0")) {
+                dirr.add(i);
+            }
+            if(dirr.size() == 2)
+                return;
+        });
+
+        int id = (dirr.get(1) + dirr.get(0))/2;
+        HttpEntity<Puzzle> keyPuzzle = MottoHelper.getPazzle(key, id);
+        String puzzleString = keyPuzzle.getBody().getPuzzle();
+        String solutionString = keyPuzzle.getBody().getSolution();
 
 //        String keyword = mottoHelper.getKeyword(HOST_URL, null, TEAM_ID, 0/*, 221*//*);
         //2st wall

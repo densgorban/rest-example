@@ -32,4 +32,10 @@ public class Puzzle {
     public void setSolution(String solution) {
         this.solution = solution;
     }
+
+    @Override
+    public String toString() {
+        return "Puzzle{" +
+                "puzzle='" + puzzle + ", solution='" + solution +"'}";
+    }
 }
